@@ -1,0 +1,29 @@
+# my_add_component/add_component.yaml
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+name: add_numbers_component # Tên định danh duy nhất cho component (~id component)
+display_name: Add Numbers Component # Tên hiển thị trong giao diện người dùng
+version: 1.0.0 # cho phép bạn có nhiều phiên bản của cùng một component.
+type: command # Loại component.
+description: A simple component that adds two numbers and saves the result to a file.
+
+inputs:
+  num1:
+    type: integer
+    description: The first number to add.
+  num2:
+    type: integer
+    description: The second number to add.
+
+outputs:
+  sum_output:
+    type: uri_folder # Thay đổi type thành uri_folder vì chúng ta ghi vào một file trong thư mục output
+    description: The folder containing the sum result file.
+
+code: ./src # thư mục chứa mã nguồn (source code) của component
+environment: azureml:AzureML-sklearn-0.24-ubuntu18.04-py37-cpu@latest # môi trường chạy cho component.
+# lệnh thực thi chính mà component sẽ chạy.
+command: >- # cho phép viết một chuỗi lệnh dài trên nhiều dòng, nhưng khi được phân tích cú pháp, nó sẽ được coi là một chuỗi duy nhất
+  python add_script.py
+  --num1 ${{inputs.num1}}
+  --num2 ${{inputs.num2}}
+  --output_path ${{outputs.sum_output}}
